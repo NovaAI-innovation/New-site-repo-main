@@ -1,0 +1,283 @@
+{
+  "gallery": [
+    {
+      "id": 1,
+      "image": "Pics for website/DSC08819.webp",
+      "alt": "Makayla Moon Gallery 1",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Exclusive Content", "x": 20, "y": 30 },
+        { "content": "VIP Preview", "x": 60, "y": 40 },
+        { "content": "Private Session", "x": 80, "y": 70 }
+      ],
+      "order": 1,
+      "active": true
+    },
+    {
+      "id": 2,
+      "image": "Pics for website/DSC08870.webp",
+      "alt": "Makayla Moon Gallery 2",
+      "icon": "💋",
+      "hotspots": [
+        { "content": "Premium Access", "x": 25, "y": 35 },
+        { "content": "Behind Scenes", "x": 65, "y": 45 },
+        { "content": "Custom Request", "x": 75, "y": 65 }
+      ],
+      "order": 2,
+      "active": true
+    },
+    {
+      "id": 3,
+      "image": "Pics for website/DSC08878.webp",
+      "alt": "Makayla Moon Gallery 3",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Live Show", "x": 30, "y": 40 },
+        { "content": "Fan Favorites", "x": 50, "y": 50 },
+        { "content": "New Releases", "x": 70, "y": 60 }
+      ],
+      "order": 3,
+      "active": true
+    },
+    {
+      "id": 4,
+      "image": "Pics for website/DSC08889.webp",
+      "alt": "Makayla Moon Gallery 4",
+      "icon": "💄",
+      "hotspots": [
+        { "content": "VIP Lounge", "x": 20, "y": 30 },
+        { "content": "Private Chat", "x": 60, "y": 40 },
+        { "content": "Exclusive Deal", "x": 80, "y": 70 }
+      ],
+      "order": 4,
+      "active": true
+    },
+    {
+      "id": 5,
+      "image": "Pics for website/DSC08921.webp",
+      "alt": "Makayla Moon Gallery 5",
+      "icon": "⚡",
+      "hotspots": [
+        { "content": "Luxury Content", "x": 25, "y": 35 },
+        { "content": "High Quality", "x": 65, "y": 45 },
+        { "content": "Unrestricted", "x": 75, "y": 65 }
+      ],
+      "order": 5,
+      "active": true
+    },
+    {
+      "id": 6,
+      "image": "Pics for website/DSC08969.webp",
+      "alt": "Makayla Moon Gallery 6",
+      "icon": "💎",
+      "hotspots": [
+        { "content": "Premium Only", "x": 30, "y": 40 },
+        { "content": "Full Access", "x": 50, "y": 50 },
+        { "content": "24/7 Available", "x": 70, "y": 60 }
+      ],
+      "order": 6,
+      "active": true
+    },
+    {
+      "id": 7,
+      "image": "Pics for website/DSC09002.webp",
+      "alt": "Makayla Moon Gallery 7",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Exclusive Content", "x": 20, "y": 30 },
+        { "content": "VIP Preview", "x": 60, "y": 40 },
+        { "content": "Private Session", "x": 80, "y": 70 }
+      ],
+      "order": 7,
+      "active": true
+    },
+    {
+      "id": 8,
+      "image": "Pics for website/DSC09012.webp",
+      "alt": "Makayla Moon Gallery 8",
+      "icon": "💋",
+      "hotspots": [
+        { "content": "Premium Access", "x": 25, "y": 35 },
+        { "content": "Behind Scenes", "x": 65, "y": 45 },
+        { "content": "Custom Request", "x": 75, "y": 65 }
+      ],
+      "order": 8,
+      "active": true
+    },
+    {
+      "id": 9,
+      "image": "Pics for website/DSC09086.webp",
+      "alt": "Makayla Moon Gallery 9",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Live Show", "x": 30, "y": 40 },
+        { "content": "Fan Favorites", "x": 50, "y": 50 },
+        { "content": "New Releases", "x": 70, "y": 60 }
+      ],
+      "order": 9,
+      "active": true
+    },
+    {
+      "id": 10,
+      "image": "Pics for website/DSC09132.webp",
+      "alt": "Makayla Moon Gallery 10",
+      "icon": "💄",
+      "hotspots": [
+        { "content": "VIP Lounge", "x": 20, "y": 30 },
+        { "content": "Private Chat", "x": 60, "y": 40 },
+        { "content": "Exclusive Deal", "x": 80, "y": 70 }
+      ],
+      "order": 10,
+      "active": true
+    },
+    {
+      "id": 11,
+      "image": "Pics for website/untitledshoot-036.webp",
+      "alt": "Makayla Moon Gallery 11",
+      "icon": "⚡",
+      "hotspots": [
+        { "content": "Luxury Content", "x": 25, "y": 35 },
+        { "content": "High Quality", "x": 65, "y": 45 },
+        { "content": "Unrestricted", "x": 75, "y": 65 }
+      ],
+      "order": 11,
+      "active": true
+    },
+    {
+      "id": 12,
+      "image": "Pics for website/untitledshoot-056-3.webp",
+      "alt": "Makayla Moon Gallery 12",
+      "icon": "💎",
+      "hotspots": [
+        { "content": "Premium Only", "x": 30, "y": 40 },
+        { "content": "Full Access", "x": 50, "y": 50 },
+        { "content": "24/7 Available", "x": 70, "y": 60 }
+      ],
+      "order": 12,
+      "active": true
+    },
+    {
+      "id": 13,
+      "image": "Pics for website/untitledshoot-075-2.webp",
+      "alt": "Makayla Moon Gallery 13",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Exclusive Content", "x": 20, "y": 30 },
+        { "content": "VIP Preview", "x": 60, "y": 40 },
+        { "content": "Private Session", "x": 80, "y": 70 }
+      ],
+      "order": 13,
+      "active": true
+    },
+    {
+      "id": 14,
+      "image": "Pics for website/untitledshoot-107.webp",
+      "alt": "Makayla Moon Gallery 14",
+      "icon": "💋",
+      "hotspots": [
+        { "content": "Premium Access", "x": 25, "y": 35 },
+        { "content": "Behind Scenes", "x": 65, "y": 45 },
+        { "content": "Custom Request", "x": 75, "y": 65 }
+      ],
+      "order": 14,
+      "active": true
+    },
+    {
+      "id": 15,
+      "image": "Pics for website/untitledshoot-110.webp",
+      "alt": "Makayla Moon Gallery 15",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Live Show", "x": 30, "y": 40 },
+        { "content": "Fan Favorites", "x": 50, "y": 50 },
+        { "content": "New Releases", "x": 70, "y": 60 }
+      ],
+      "order": 15,
+      "active": true
+    },
+    {
+      "id": 16,
+      "image": "Pics for website/untitledshoot-118.webp",
+      "alt": "Makayla Moon Gallery 16",
+      "icon": "💄",
+      "hotspots": [
+        { "content": "VIP Lounge", "x": 20, "y": 30 },
+        { "content": "Private Chat", "x": 60, "y": 40 },
+        { "content": "Exclusive Deal", "x": 80, "y": 70 }
+      ],
+      "order": 16,
+      "active": true
+    },
+    {
+      "id": 17,
+      "image": "Pics for website/untitledshoot-146.webp",
+      "alt": "Makayla Moon Gallery 17",
+      "icon": "⚡",
+      "hotspots": [
+        { "content": "Luxury Content", "x": 25, "y": 35 },
+        { "content": "High Quality", "x": 65, "y": 45 },
+        { "content": "Unrestricted", "x": 75, "y": 65 }
+      ],
+      "order": 17,
+      "active": true
+    },
+    {
+      "id": 18,
+      "image": "Pics for website/untitledshoot-232.webp",
+      "alt": "Makayla Moon Gallery 18",
+      "icon": "💎",
+      "hotspots": [
+        { "content": "Premium Only", "x": 30, "y": 40 },
+        { "content": "Full Access", "x": 50, "y": 50 },
+        { "content": "24/7 Available", "x": 70, "y": 60 }
+      ],
+      "order": 18,
+      "active": true
+    },
+    {
+      "id": 19,
+      "image": "Pics for website/untitledshoot-248.webp",
+      "alt": "Makayla Moon Gallery 19",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Exclusive Content", "x": 20, "y": 30 },
+        { "content": "VIP Preview", "x": 60, "y": 40 },
+        { "content": "Private Session", "x": 80, "y": 70 }
+      ],
+      "order": 19,
+      "active": true
+    },
+    {
+      "id": 20,
+      "image": "Pics for website/untitledshoot-260.webp",
+      "alt": "Makayla Moon Gallery 20",
+      "icon": "💋",
+      "hotspots": [
+        { "content": "Premium Access", "x": 25, "y": 35 },
+        { "content": "Behind Scenes", "x": 65, "y": 45 },
+        { "content": "Custom Request", "x": 75, "y": 65 }
+      ],
+      "order": 20,
+      "active": true
+    },
+    {
+      "id": 21,
+      "image": "Pics for website/_RJF8323-Edit.webp",
+      "alt": "Makayla Moon Gallery 21",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Live Show", "x": 30, "y": 40 },
+        { "content": "Fan Favorites", "x": 50, "y": 50 },
+        { "content": "New Releases", "x": 70, "y": 60 }
+      ],
+      "order": 21,
+      "active": true
+    }
+  ],
+  "settings": {
+    "autoPlay": false,
+    "transitionSpeed": 600,
+    "showIndicators": true
+  }
+}
+

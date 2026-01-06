@@ -1,0 +1,19 @@
+{
+  "name": "makayla-moon-gallery",
+  "version": "1.0.0",
+  "description": "Gallery management system with serverless functions",
+  "scripts": {
+    "dev": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "gallery",
+    "cms",
+    "serverless"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
+}
+
