@@ -1,0 +1,255 @@
+<!-- Example: Video support additions to admin.html -->
+<!-- This shows the additional UI elements needed for video management -->
+
+<!-- Add this to the upload section -->
+<div class="upload-section">
+    <h2>📤 Upload New Media</h2>
+    
+    <!-- Media Type Selector -->
+    <div class="media-type-selector" style="margin-bottom: 20px;">
+        <label style="color: var(--text-light); margin-right: 15px;">Media Type:</label>
+        <select id="media-type-selector" onchange="toggleMediaType()" style="padding: 10px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; color: var(--text-light);">
+            <option value="image">🖼️ Image</option>
+            <option value="video">🎥 Video</option>
+        </select>
+    </div>
+    
+    <!-- Image Upload Area (shown by default) -->
+    <div id="image-upload-area" class="upload-area">
+        <div class="upload-icon">📁</div>
+        <p><strong>Drag & drop images here</strong></p>
+        <p style="font-size: 14px; color: rgba(244, 229, 212, 0.6);">or click to browse</p>
+        <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+    </div>
+    
+    <!-- Video URL Input Area (hidden by default) -->
+    <div id="video-upload-area" class="upload-area" style="display: none;">
+        <div class="upload-icon">🎥</div>
+        <p><strong>Add Video</strong></p>
+        <div style="margin-top: 20px;">
+            <label style="display: block; color: var(--text-light); margin-bottom: 10px;">Video URL (YouTube, Vimeo, or direct link):</label>
+            <input 
+                type="text" 
+                id="video-url-input" 
+                placeholder="https://www.youtube.com/watch?v=..." 
+                style="width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; color: var(--text-light); font-size: 14px;"
+            >
+            <button 
+                class="btn btn-primary" 
+                onclick="addVideoFromUrl()" 
+                style="margin-top: 15px; width: 100%;"
+            >
+                ➕ Add Video
+            </button>
+        </div>
+        <p style="font-size: 12px; color: rgba(244, 229, 212, 0.6); margin-top: 15px;">
+            Supported: YouTube, Vimeo, or direct video file URLs
+        </p>
+    </div>
+    
+    <div id="upload-status" class="status-message"></div>
+</div>
+
+<!-- Update gallery item display to show video type -->
+<script>
+// Toggle between image and video upload
+function toggleMediaType() {
+    const selector = document.getElementById('media-type-selector');
+    const imageArea = document.getElementById('image-upload-area');
+    const videoArea = document.getElementById('video-upload-area');
+    
+    if (selector.value === 'video') {
+        imageArea.style.display = 'none';
+        videoArea.style.display = 'block';
+    } else {
+        imageArea.style.display = 'block';
+        videoArea.style.display = 'none';
+    }
+}
+
+// Add video from URL
+function addVideoFromUrl() {
+    const urlInput = document.getElementById('video-url-input');
+    const videoUrl = urlInput.value.trim();
+    
+    if (!videoUrl) {
+        alert('Please enter a video URL');
+        return;
+    }
+    
+    // Detect platform and extract video ID
+    const videoData = parseVideoUrl(videoUrl);
+    
+    if (!videoData) {
+        alert('Invalid video URL. Please use YouTube, Vimeo, or a direct video link.');
+        return;
+    }
+    
+    // Create new video item
+    const newVideo = {
+        id: Date.now(), // Generate unique ID
+        type: 'video',
+        videoUrl: videoUrl,
+        videoId: videoData.videoId,
+        platform: videoData.platform,
+        thumbnail: videoData.thumbnail,
+        alt: 'New Video',
+        icon: '🎥',
+        order: galleryData.gallery.length + 1,
+        active: true,
+        autoplay: false,
+        loop: false,
+        muted: false
+    };
+    
+    // Add to gallery data
+    galleryData.gallery.push(newVideo);
+    isDirty = true;
+    
+    // Refresh display
+    displayGallery();
+    updateSaveButton();
+    
+    // Clear input
+    urlInput.value = '';
+    
+    // Show success message
+    const status = document.getElementById('upload-status');
+    status.className = 'status-message success';
+    status.textContent = '✅ Video added successfully!';
+    setTimeout(() => {
+        status.style.display = 'none';
+    }, 3000);
+}
+
+// Parse video URL to extract platform and ID
+function parseVideoUrl(url) {
+    // YouTube patterns
+    const youtubePatterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+        /youtube\.com\/watch\?.*v=([^&\n?#]+)/
+    ];
+    
+    for (const pattern of youtubePatterns) {
+        const match = url.match(pattern);
+        if (match) {
+            const videoId = match[1];
+            return {
+                platform: 'youtube',
+                videoId: videoId,
+                thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+            };
+        }
+    }
+    
+    // Vimeo patterns
+    const vimeoPatterns = [
+        /vimeo\.com\/(\d+)/,
+        /vimeo\.com\/video\/(\d+)/
+    ];
+    
+    for (const pattern of vimeoPatterns) {
+        const match = url.match(pattern);
+        if (match) {
+            const videoId = match[1];
+            return {
+                platform: 'vimeo',
+                videoId: videoId,
+                thumbnail: `https://vumbnail.com/${videoId}.jpg`
+            };
+        }
+    }
+    
+    // Direct video file (MP4, WebM, etc.)
+    if (url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i)) {
+        return {
+            platform: 'self-hosted',
+            videoId: null,
+            thumbnail: null
+        };
+    }
+    
+    return null;
+}
+
+// Update displayGallery to show video items
+function displayGallery() {
+    if (!galleryData) return;
+    
+    const container = document.getElementById('gallery-list');
+    const sortedItems = [...galleryData.gallery].sort((a, b) => a.order - b.order);
+    
+    container.innerHTML = sortedItems.map(item => {
+        const mediaType = item.type || 'image';
+        
+        if (mediaType === 'video') {
+            return renderVideoItem(item);
+        } else {
+            return renderImageItem(item);
+        }
+    }).join('');
+    
+    isDirty = false;
+}
+
+// Render video item in admin
+function renderVideoItem(item) {
+    const thumbnail = item.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ccc%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3EVideo%3C/text%3E%3C/svg%3E';
+    
+    return `
+        <div class="gallery-item" data-id="${item.id}">
+            <div style="position: relative;">
+                <img src="${thumbnail}" alt="${item.alt}" style="width: 100%; height: 250px; object-fit: cover; display: block;">
+                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                    🎥 ${item.platform || 'video'}
+                </div>
+            </div>
+            <div class="gallery-item-controls">
+                <div class="gallery-item-header">
+                    <div class="item-order">${item.order}</div>
+                    <span class="drag-handle">☰</span>
+                </div>
+                <label>Video URL:</label>
+                <input type="text" value="${item.videoUrl || ''}" placeholder="Video URL" onchange="updateItem(${item.id}, 'videoUrl', this.value)">
+                <label>Alt Text:</label>
+                <input type="text" value="${item.alt}" placeholder="Alt text" onchange="updateItem(${item.id}, 'alt', this.value)">
+                <label>Platform:</label>
+                <select onchange="updateItem(${item.id}, 'platform', this.value)">
+                    <option value="youtube" ${item.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+                    <option value="vimeo" ${item.platform === 'vimeo' ? 'selected' : ''}>Vimeo</option>
+                    <option value="cloudinary" ${item.platform === 'cloudinary' ? 'selected' : ''}>Cloudinary</option>
+                    <option value="self-hosted" ${item.platform === 'self-hosted' ? 'selected' : ''}>Self-Hosted</option>
+                </select>
+                <label>Icon:</label>
+                <select onchange="updateItem(${item.id}, 'icon', this.value)">
+                    <option value="🎥" ${item.icon === '🎥' ? 'selected' : ''}>🎥 Camera</option>
+                    <option value="🎬" ${item.icon === '🎬' ? 'selected' : ''}>🎬 Film</option>
+                    <option value="🎞️" ${item.icon === '🎞️' ? 'selected' : ''}>🎞️ Reel</option>
+                    <option value="📹" ${item.icon === '📹' ? 'selected' : ''}>📹 Video Camera</option>
+                </select>
+                <label>Order:</label>
+                <input type="number" class="order-input" value="${item.order}" min="1" onchange="updateItem(${item.id}, 'order', parseInt(this.value) || 1)">
+                <label>Active:</label>
+                <select onchange="updateItem(${item.id}, 'active', this.value === 'true')">
+                    <option value="true" ${item.active !== false ? 'selected' : ''}>Active</option>
+                    <option value="false" ${item.active === false ? 'selected' : ''}>Hidden</option>
+                </select>
+                <button class="btn btn-danger" onclick="deleteItem(${item.id})">🗑️ Delete</button>
+            </div>
+        </div>
+    `;
+}
+
+// Render image item (existing function, shown for reference)
+function renderImageItem(item) {
+    return `
+        <div class="gallery-item" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.alt}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ccc%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3EImage not found%3C/text%3E%3C/svg%3E'">
+            <div class="gallery-item-controls">
+                <!-- Existing image controls -->
+            </div>
+        </div>
+    `;
+}
+</script>
+

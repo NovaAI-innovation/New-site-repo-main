@@ -1,0 +1,159 @@
+/* Additional CSS for video support in gallery */
+
+/* Video container styling */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+}
+
+/* Video player styling */
+.video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: none;
+}
+
+/* Iframe video players (YouTube, Vimeo) */
+.gallery-slide iframe.video-player {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+}
+
+/* HTML5 video player */
+.gallery-slide video.video-player {
+    width: 100%;
+    height: 100%;
+    max-height: 600px;
+    outline: none;
+}
+
+/* Video thumbnail/poster */
+.video-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.video-poster:hover {
+    opacity: 0.9;
+}
+
+/* Play button overlay for videos */
+.video-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(212, 175, 55, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.video-play-button:hover {
+    background: var(--accent-gold);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-play-button::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 25px solid var(--primary-color);
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    margin-left: 5px;
+}
+
+/* Video indicator in carousel */
+.carousel-indicator.video-indicator::after {
+    content: '🎥';
+    font-size: 10px;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+}
+
+/* Video loading state */
+.video-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(244, 229, 212, 0.8);
+}
+
+.video-loading::after {
+    content: 'Loading video...';
+}
+
+/* Responsive video */
+@media (max-width: 768px) {
+    .gallery-slide iframe.video-player,
+    .gallery-slide video.video-player {
+        min-height: 400px;
+        max-height: 400px;
+    }
+    
+    .video-play-button {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .video-play-button::before {
+        border-left-width: 18px;
+        border-top-width: 12px;
+        border-bottom-width: 12px;
+    }
+}
+
+/* Video controls customization */
+video.video-player::-webkit-media-controls-panel {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+video.video-player::-webkit-media-controls-play-button {
+    background: var(--accent-gold);
+    border-radius: 50%;
+}
+
+/* Video slide specific styles */
+.gallery-slide[data-type="video"] {
+    background: #000;
+}
+
+.gallery-slide[data-type="video"] .gallery-overlay {
+    pointer-events: none;
+}
+
+/* Video thumbnail in admin */
+.gallery-item[data-type="video"] img {
+    position: relative;
+}
+
+.gallery-item[data-type="video"]::after {
+    content: '🎥';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+

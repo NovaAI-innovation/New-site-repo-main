@@ -128,23 +128,73 @@ function renderGallery() {
         .sort((a, b) => a.order - b.order);
     
     gallerySlidesContainer.innerHTML = activeItems.map((item, index) => {
-        const hotspots = item.hotspots.map(hotspot => 
-            `<div class="hotspot" data-content="${hotspot.content}" style="left: ${hotspot.x}%; top: ${hotspot.y}%;"></div>`
-        ).join('');
+        // Determine media type (default to 'image' for backward compatibility)
+        const mediaType = item.type || 'image';
         
-        return `
-            <div class="gallery-slide ${index === 0 ? 'active' : ''}" data-id="${item.id}">
-                <img src="${item.image}" alt="${item.alt}" loading="lazy">
-                ${hotspots}
-                <div class="gallery-overlay">
-                    <span class="gallery-icon">${item.icon}</span>
-                </div>
-            </div>
-        `;
+        if (mediaType === 'video') {
+            return renderVideoSlide(item, index);
+        } else {
+            return renderImageSlide(item, index);
+        }
     }).join('');
     
     // Update carousel slides reference
     carouselSlides = document.querySelectorAll('.gallery-slide');
+}
+
+// Render image slide (existing functionality)
+function renderImageSlide(item, index) {
+    const hotspots = item.hotspots ? item.hotspots.map(hotspot => 
+        `<div class="hotspot" data-content="${hotspot.content}" style="left: ${hotspot.x}%; top: ${hotspot.y}%;"></div>`
+    ).join('') : '';
+    
+    return `
+        <div class="gallery-slide ${index === 0 ? 'active' : ''}" data-id="${item.id}" data-type="image">
+            <img src="${item.image}" alt="${item.alt}" loading="lazy">
+            ${hotspots}
+            <div class="gallery-overlay">
+                <span class="gallery-icon">${item.icon}</span>
+            </div>
+        </div>
+    `;
+}
+
+// Render video slide (Cloudinary videos)
+function renderVideoSlide(item, index) {
+    const isActive = index === 0 ? 'active' : '';
+    const videoUrl = item.videoUrl;
+    const poster = item.poster || item.thumbnail || '';
+    const autoplay = item.autoplay ? 'autoplay' : '';
+    const loop = item.loop ? 'loop' : '';
+    const muted = item.muted !== false ? 'muted' : ''; // Default to muted for autoplay compatibility
+    
+    // Cloudinary video URL - can add transformations
+    // Example: https://res.cloudinary.com/your-cloud/video/upload/v1234567/video.mp4
+    // With transformations: https://res.cloudinary.com/your-cloud/video/upload/q_auto,f_auto/v1234567/video.mp4
+    
+    return `
+        <div class="gallery-slide ${isActive}" data-id="${item.id}" data-type="video">
+            <div class="video-container">
+                <video 
+                    class="video-player"
+                    poster="${poster}"
+                    controls
+                    preload="metadata"
+                    ${autoplay}
+                    ${loop}
+                    ${muted}
+                    playsinline
+                >
+                    <source src="${videoUrl}" type="video/mp4">
+                    <source src="${videoUrl.replace(/\.mp4$/i, '.webm')}" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="gallery-overlay">
+                <span class="gallery-icon">${item.icon || '🎥'}</span>
+            </div>
+        </div>
+    `;
 }
 
 // Initialize carousel functionality
@@ -169,7 +219,16 @@ function initializeCarousel() {
     // Update carousel display
     function updateCarousel() {
         // Remove active class from all slides
-        carouselSlides.forEach(slide => slide.classList.remove('active'));
+        carouselSlides.forEach(slide => {
+            slide.classList.remove('active');
+            
+            // Pause any videos in inactive slides
+            const video = slide.querySelector('video');
+            if (video) {
+                video.pause();
+                video.currentTime = 0; // Reset to beginning
+            }
+        });
         
         // Add active class to current slide
         if (carouselSlides[currentSlideIndex]) {

@@ -1,0 +1,99 @@
+{
+  "gallery": [
+    {
+      "id": 1,
+      "type": "image",
+      "image": "Pics for website/DSC08819.webp",
+      "alt": "Makayla Moon Gallery 1",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Exclusive Content", "x": 20, "y": 30 },
+        { "content": "VIP Preview", "x": 60, "y": 40 },
+        { "content": "Private Session", "x": 80, "y": 70 }
+      ],
+      "order": 1,
+      "active": true
+    },
+    {
+      "id": 2,
+      "type": "image",
+      "image": "Pics for website/DSC08870.webp",
+      "alt": "Makayla Moon Gallery 2",
+      "icon": "💋",
+      "hotspots": [
+        { "content": "Premium Access", "x": 25, "y": 35 },
+        { "content": "Behind Scenes", "x": 65, "y": 45 },
+        { "content": "Custom Request", "x": 75, "y": 65 }
+      ],
+      "order": 2,
+      "active": true
+    },
+    {
+      "id": 22,
+      "type": "video",
+      "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoId": "dQw4w9WgXcQ",
+      "platform": "youtube",
+      "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+      "alt": "Exclusive Video Content",
+      "icon": "🎥",
+      "order": 3,
+      "active": true,
+      "autoplay": false,
+      "loop": false,
+      "muted": false
+    },
+    {
+      "id": 23,
+      "type": "video",
+      "videoUrl": "https://vimeo.com/123456789",
+      "videoId": "123456789",
+      "platform": "vimeo",
+      "thumbnail": "https://vumbnail.com/123456789.jpg",
+      "alt": "Behind the Scenes Video",
+      "icon": "🎬",
+      "order": 4,
+      "active": true,
+      "autoplay": false,
+      "loop": false,
+      "muted": false
+    },
+    {
+      "id": 3,
+      "type": "image",
+      "image": "Pics for website/DSC08878.webp",
+      "alt": "Makayla Moon Gallery 3",
+      "icon": "🔥",
+      "hotspots": [
+        { "content": "Live Show", "x": 30, "y": 40 },
+        { "content": "Fan Favorites", "x": 50, "y": 50 },
+        { "content": "New Releases", "x": 70, "y": 60 }
+      ],
+      "order": 5,
+      "active": true
+    },
+    {
+      "id": 24,
+      "type": "video",
+      "videoUrl": "https://res.cloudinary.com/your-cloud/video/upload/v1234567/video.mp4",
+      "thumbnail": "https://res.cloudinary.com/your-cloud/video/upload/v1234567/video.jpg",
+      "poster": "https://res.cloudinary.com/your-cloud/video/upload/v1234567/video.jpg",
+      "platform": "cloudinary",
+      "alt": "Self-Hosted Video",
+      "icon": "🎞️",
+      "order": 6,
+      "active": true,
+      "autoplay": false,
+      "loop": false,
+      "muted": false
+    }
+  ],
+  "settings": {
+    "autoPlay": false,
+    "transitionSpeed": 600,
+    "showIndicators": true,
+    "videoAutoplay": false,
+    "videoMuted": true
+  }
+}
+

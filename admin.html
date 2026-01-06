@@ -364,13 +364,34 @@
             </div>
             
             <div class="upload-section">
-                <h2>📤 Upload New Image</h2>
-                <div class="upload-area" id="upload-area">
+                <h2>📤 Upload New Media</h2>
+                
+                <!-- Media Type Selector -->
+                <div class="media-type-selector" style="margin-bottom: 20px;">
+                    <label style="color: var(--text-light); margin-right: 15px; font-weight: 500;">Media Type:</label>
+                    <select id="media-type-selector" onchange="toggleMediaType()" style="padding: 10px 15px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 8px; color: var(--text-light); font-size: 14px; cursor: pointer;">
+                        <option value="image">🖼️ Image</option>
+                        <option value="video">🎥 Video</option>
+                    </select>
+                </div>
+                
+                <!-- Image Upload Area -->
+                <div id="image-upload-area" class="upload-area">
                     <div class="upload-icon">📁</div>
                     <p><strong>Drag & drop images here</strong></p>
                     <p style="font-size: 14px; color: rgba(244, 229, 212, 0.6);">or click to browse</p>
                     <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
                 </div>
+                
+                <!-- Video Upload Area -->
+                <div id="video-upload-area" class="upload-area" style="display: none;">
+                    <div class="upload-icon">🎥</div>
+                    <p><strong>Drag & drop videos here</strong></p>
+                    <p style="font-size: 14px; color: rgba(244, 229, 212, 0.6);">or click to browse</p>
+                    <p style="font-size: 12px; color: rgba(244, 229, 212, 0.5); margin-top: 10px;">Supported: MP4, WebM, MOV (Max 100MB)</p>
+                    <input type="file" id="video-input" multiple accept="video/*" style="display: none;">
+                </div>
+                
                 <div id="upload-status" class="status-message"></div>
             </div>
             
@@ -427,10 +448,30 @@
             loadGallery();
         }
         
-        // File upload handling
-        const uploadArea = document.getElementById('upload-area');
-        const fileInput = document.getElementById('file-input');
+        // Toggle between image and video upload
+        function toggleMediaType() {
+            const selector = document.getElementById('media-type-selector');
+            const imageArea = document.getElementById('image-upload-area');
+            const videoArea = document.getElementById('video-upload-area');
+            const imageInput = document.getElementById('file-input');
+            const videoInput = document.getElementById('video-input');
+            
+            if (selector.value === 'video') {
+                imageArea.style.display = 'none';
+                videoArea.style.display = 'block';
+            } else {
+                imageArea.style.display = 'block';
+                videoArea.style.display = 'none';
+            }
+        }
         
+        // File upload handling
+        const uploadArea = document.getElementById('image-upload-area');
+        const fileInput = document.getElementById('file-input');
+        const videoUploadArea = document.getElementById('video-upload-area');
+        const videoInput = document.getElementById('video-input');
+        
+        // Image upload handlers
         uploadArea.addEventListener('click', () => fileInput.click());
         
         uploadArea.addEventListener('dragover', (e) => {
@@ -445,24 +486,55 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
+            handleFiles(e.dataTransfer.files, 'image');
         });
         
         fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+            handleFiles(e.target.files, 'image');
         });
         
-        async function handleFiles(files) {
+        // Video upload handlers
+        videoUploadArea.addEventListener('click', () => videoInput.click());
+        
+        videoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            videoUploadArea.classList.add('dragover');
+        });
+        
+        videoUploadArea.addEventListener('dragleave', () => {
+            videoUploadArea.classList.remove('dragover');
+        });
+        
+        videoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            videoUploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files, 'video');
+        });
+        
+        videoInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files, 'video');
+        });
+        
+        async function handleFiles(files, mediaType = 'image') {
             const status = document.getElementById('upload-status');
             status.className = 'status-message info';
-            status.textContent = `Uploading ${files.length} file(s)...`;
+            status.textContent = `Uploading ${files.length} ${mediaType}(s)...`;
             
             try {
                 for (let file of files) {
-                    await uploadFile(file);
+                    const result = await uploadFile(file, mediaType);
+                    
+                    // Add to gallery data
+                    if (mediaType === 'video') {
+                        addVideoToGallery(result);
+                    } else {
+                        addImageToGallery(result);
+                    }
                 }
                 status.className = 'status-message success';
-                status.textContent = `✅ Successfully uploaded ${files.length} file(s)!`;
+                status.textContent = `✅ Successfully uploaded ${files.length} ${mediaType}(s)!`;
+                isDirty = true;
+                updateSaveButton();
                 loadGallery(); // Reload gallery
                 setTimeout(() => {
                     status.style.display = 'none';
@@ -473,12 +545,17 @@
             }
         }
         
-        async function uploadFile(file) {
+        async function uploadFile(file, mediaType = 'image') {
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('mediaType', mediaType);
             
             try {
-                const response = await fetch(`${API_BASE}/.netlify/functions/upload-image`, {
+                const endpoint = mediaType === 'video' 
+                    ? `${API_BASE}/.netlify/functions/upload-video`
+                    : `${API_BASE}/.netlify/functions/upload-image`;
+                
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
@@ -487,18 +564,55 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Upload failed');
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Upload failed');
                 }
                 
                 const data = await response.json();
                 return data;
             } catch (error) {
-                // Fallback: For now, just add to gallery with local path
-                // In production, this would upload to cloud storage
-                console.warn('Upload function not available, using local path:', error);
-                const fileName = `Pics for website/${Date.now()}-${file.name}`;
-                return { path: fileName };
+                console.warn('Upload function not available:', error);
+                // Fallback for development
+                if (mediaType === 'video') {
+                    throw new Error('Video upload requires Cloudinary setup. Please configure serverless functions.');
+                } else {
+                    const fileName = `Pics for website/${Date.now()}-${file.name}`;
+                    return { path: fileName, url: fileName };
+                }
             }
+        }
+        
+        function addImageToGallery(result) {
+            const newImage = {
+                id: Date.now(),
+                type: 'image',
+                image: result.url || result.path,
+                alt: 'New Image',
+                icon: '🔥',
+                hotspots: [],
+                order: galleryData.gallery.length + 1,
+                active: true
+            };
+            galleryData.gallery.push(newImage);
+        }
+        
+        function addVideoToGallery(result) {
+            const newVideo = {
+                id: Date.now(),
+                type: 'video',
+                videoUrl: result.videoUrl || result.url,
+                thumbnail: result.thumbnail || result.poster || '',
+                poster: result.poster || result.thumbnail || '',
+                platform: 'cloudinary',
+                alt: 'New Video',
+                icon: '🎥',
+                order: galleryData.gallery.length + 1,
+                active: true,
+                autoplay: false,
+                loop: false,
+                muted: true
+            };
+            galleryData.gallery.push(newVideo);
         }
         
         // Load gallery from JSON
@@ -521,8 +635,22 @@
             const container = document.getElementById('gallery-list');
             const sortedItems = [...galleryData.gallery].sort((a, b) => a.order - b.order);
             
-            container.innerHTML = sortedItems.map(item => `
-                <div class="gallery-item" data-id="${item.id}">
+            container.innerHTML = sortedItems.map(item => {
+                const mediaType = item.type || 'image';
+                
+                if (mediaType === 'video') {
+                    return renderVideoItem(item);
+                } else {
+                    return renderImageItem(item);
+                }
+            }).join('');
+            
+            isDirty = false;
+        }
+        
+        function renderImageItem(item) {
+            return `
+                <div class="gallery-item" data-id="${item.id}" data-type="image">
                     <img src="${item.image}" alt="${item.alt}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ccc%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3EImage not found%3C/text%3E%3C/svg%3E'">
                     <div class="gallery-item-controls">
                         <div class="gallery-item-header">
@@ -549,9 +677,59 @@
                         <button class="btn btn-danger" onclick="deleteItem(${item.id})">🗑️ Delete</button>
                     </div>
                 </div>
-            `).join('');
+            `;
+        }
+        
+        function renderVideoItem(item) {
+            const thumbnail = item.thumbnail || item.poster || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23ccc%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2214%22 dy=%2210.5%22 font-weight=%22bold%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22%3EVideo%3C/text%3E%3C/svg%3E';
             
-            isDirty = false;
+            return `
+                <div class="gallery-item" data-id="${item.id}" data-type="video">
+                    <div style="position: relative;">
+                        <img src="${thumbnail}" alt="${item.alt}" style="width: 100%; height: 250px; object-fit: cover; display: block;">
+                        <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                            🎥 Video
+                        </div>
+                    </div>
+                    <div class="gallery-item-controls">
+                        <div class="gallery-item-header">
+                            <div class="item-order">${item.order}</div>
+                            <span class="drag-handle">☰</span>
+                        </div>
+                        <label>Video URL:</label>
+                        <input type="text" value="${item.videoUrl || ''}" placeholder="Video URL" onchange="updateItem(${item.id}, 'videoUrl', this.value)">
+                        <label>Thumbnail/Poster URL:</label>
+                        <input type="text" value="${item.thumbnail || item.poster || ''}" placeholder="Thumbnail URL" onchange="updateItem(${item.id}, 'thumbnail', this.value); updateItem(${item.id}, 'poster', this.value)">
+                        <label>Alt Text:</label>
+                        <input type="text" value="${item.alt}" placeholder="Alt text" onchange="updateItem(${item.id}, 'alt', this.value)">
+                        <label>Icon:</label>
+                        <select onchange="updateItem(${item.id}, 'icon', this.value)">
+                            <option value="🎥" ${item.icon === '🎥' ? 'selected' : ''}>🎥 Camera</option>
+                            <option value="🎬" ${item.icon === '🎬' ? 'selected' : ''}>🎬 Film</option>
+                            <option value="🎞️" ${item.icon === '🎞️' ? 'selected' : ''}>🎞️ Reel</option>
+                            <option value="📹" ${item.icon === '📹' ? 'selected' : ''}>📹 Video Camera</option>
+                        </select>
+                        <label>Order:</label>
+                        <input type="number" class="order-input" value="${item.order}" min="1" onchange="updateItem(${item.id}, 'order', parseInt(this.value) || 1)">
+                        <label>Autoplay:</label>
+                        <select onchange="updateItem(${item.id}, 'autoplay', this.value === 'true')">
+                            <option value="false" ${!item.autoplay ? 'selected' : ''}>No</option>
+                            <option value="true" ${item.autoplay ? 'selected' : ''}>Yes</option>
+                        </select>
+                        <label>Loop:</label>
+                        <select onchange="updateItem(${item.id}, 'loop', this.value === 'true')">
+                            <option value="false" ${!item.loop ? 'selected' : ''}>No</option>
+                            <option value="true" ${item.loop ? 'selected' : ''}>Yes</option>
+                        </select>
+                        <label>Active:</label>
+                        <select onchange="updateItem(${item.id}, 'active', this.value === 'true')">
+                            <option value="true" ${item.active !== false ? 'selected' : ''}>Active</option>
+                            <option value="false" ${item.active === false ? 'selected' : ''}>Hidden</option>
+                        </select>
+                        <button class="btn btn-danger" onclick="deleteItem(${item.id})">🗑️ Delete</button>
+                    </div>
+                </div>
+            `;
         }
         
         function updateItem(id, field, value) {
